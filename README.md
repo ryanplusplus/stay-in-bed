@@ -1,5 +1,5 @@
-# stm8-tiny-starter-kit
-Empty project for creating an stm8-tiny application.
+# stay-in-bed
+Wake up light to tell my daughter whether it's time to get up or stay in bed.
 
 ## Setup
 ### Linux
