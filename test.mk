@@ -3,18 +3,25 @@ BUILD_DIR ?= ./build/test
 STM8_TINY = lib/stm8-tiny
 TINY = $(STM8_TINY)/lib/tiny
 
+SRC_FILES ?= \
+  src/plugin/led_animation_plugin.c \
+
 SRC_DIRS ?= \
+  src/data_model \
   $(TINY)/src \
   $(TINY)/test/double \
   test \
 
 INC_DIRS ?= \
+  src \
+  src/plugin \
+  src/type \
   $(STM8_TINY)/src \
   $(TINY)/include \
 
 LDFLAGS := -lstdc++ -lCppUTest -lCppUTestExt -lm
 
-SRCS := $(shell find $(SRC_DIRS) -name *.cpp -or -name *.c -or -name *.s)
+SRCS := $(SRC_FILES) $(shell find $(SRC_DIRS) -name *.cpp -or -name *.c -or -name *.s)
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
