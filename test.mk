@@ -5,6 +5,7 @@ TINY = $(STM8_TINY)/lib/tiny
 
 SRC_FILES ?= \
   src/plugin/led_animation_plugin.c \
+  src/plugin/wake_light_plugin.c \
 
 SRC_DIRS ?= \
   src/data_model \
