@@ -57,6 +57,10 @@ TEST_GROUP(wake_light_plugin) {
     tiny_key_value_store_write(kvs, key_current_time, &time);
   }
 
+  void given_that_the_time_is(uint8_t hours, uint8_t minutes) {
+    when_the_time_becomes(hours, minutes);
+  }
+
   void the_requested_led_state_should_be(const led_state_t* expected) {
     led_state_t actual;
     tiny_key_value_store_read(kvs, key_led_requested_state, &actual);
@@ -64,6 +68,13 @@ TEST_GROUP(wake_light_plugin) {
     CHECK_EQUAL(expected->blue, actual.blue);
     CHECK_EQUAL(expected->green, actual.green);
     CHECK_EQUAL(expected->brightness, actual.brightness);
+  }
+
+  void after_the_button_is_pressed() {
+    signal_t signal;
+    tiny_key_value_store_read(kvs, key_button_press_signal, &signal);
+    signal++;
+    tiny_key_value_store_write(kvs, key_button_press_signal, &signal);
   }
 };
 
@@ -126,5 +137,34 @@ TEST(wake_light_plugin, should_turn_off_light_between_801_am_and_759_pm) {
 TEST(wake_light_plugin, should_turn_off_light_at_759_pm) {
   given_that_the_requested_led_state_is(&wake);
   when_the_time_becomes(19, 59);
+  the_requested_led_state_should_be(&off);
+}
+
+TEST(wake_light_plugin, should_start_a_nap_sequence_when_the_button_is_pressed) {
+  given_that_the_time_is(13, 30);
+
+  after_the_button_is_pressed();
+  the_requested_led_state_should_be(&night);
+
+  when_the_time_becomes(15, 59);
+  the_requested_led_state_should_be(&night);
+
+  when_the_time_becomes(16, 0);
+  the_requested_led_state_should_be(&wake);
+
+  when_the_time_becomes(18, 29);
+  the_requested_led_state_should_be(&wake);
+
+  when_the_time_becomes(18, 30);
+  the_requested_led_state_should_be(&off);
+}
+
+TEST(wake_light_plugin, should_cancel_a_nap_sequence_when_the_button_is_pressed_during_a_nap) {
+  given_that_the_time_is(13, 30);
+
+  after_the_button_is_pressed();
+  the_requested_led_state_should_be(&night);
+
+  after_the_button_is_pressed();
   the_requested_led_state_should_be(&off);
 }
