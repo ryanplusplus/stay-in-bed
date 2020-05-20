@@ -35,13 +35,21 @@ void ds1307_init(i_tiny_i2c_t* _i2c) {
 }
 
 void ds1307_get(clock_time_t* time) {
-  time->hours = read_register(register_hours);
-  time->minutes = read_register(register_minutes);
-  time->seconds = read_register(register_seconds);
+  const uint8_t hours = read_register(register_hours);
+  const uint8_t minutes = read_register(register_minutes);
+  const uint8_t seconds = read_register(register_seconds);
+
+  time->hours = (hours & 0x0F) + ((hours & 0x30) >> 4) * 10;
+  time->minutes = (minutes & 0x0F) + ((minutes & 0x70) >> 4) * 10;
+  time->seconds = (seconds & 0x0F) + ((seconds & 0x70) >> 4) * 10;
 }
 
 void ds1307_set(const clock_time_t* time) {
-  write_register(register_hours, time->hours);
-  write_register(register_minutes, time->minutes);
-  write_register(register_seconds, time->seconds);
+  const uint8_t hours = ((time->hours / 10) << 4) + (time->hours % 10);
+  const uint8_t minutes = ((time->minutes / 10) << 4) + (time->minutes % 10);
+  const uint8_t seconds = ((time->seconds / 10) << 4) + (time->seconds % 10);
+
+  write_register(register_hours, hours);
+  write_register(register_minutes, minutes);
+  write_register(register_seconds, seconds);
 }
