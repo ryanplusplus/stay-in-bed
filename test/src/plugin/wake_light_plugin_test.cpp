@@ -71,7 +71,7 @@ TEST_GROUP(wake_light_plugin) {
   }
 
   void after_the_button_is_pressed() {
-    signal_t signal;
+    event_signal_t signal;
     tiny_key_value_store_read(kvs, key_button_press_signal, &signal);
     signal++;
     tiny_key_value_store_write(kvs, key_button_press_signal, &signal);

@@ -11,6 +11,7 @@
 #include "led_plugin.h"
 #include "led_animation_plugin.h"
 #include "wake_light_plugin.h"
+#include "button_plugin.h"
 
 inline void application_init(tiny_timer_group_t* timer_group) {
   data_model_init();
@@ -20,6 +21,7 @@ inline void application_init(tiny_timer_group_t* timer_group) {
   led_animation_plugin_init(timer_group, key_value_store);
   wake_light_plugin_init(timer_group, key_value_store);
   rtc_plugin_init(timer_group, key_value_store);
+  button_plugin_init(timer_group, key_value_store);
 }
 
 #endif
