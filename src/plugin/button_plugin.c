@@ -8,7 +8,7 @@
 #include "button_plugin.h"
 #include "tiny_utils.h"
 
-#define button_port GPIOC
+#define button_port GPIOD
 #define button_pin (1 << 3)
 
 enum {
@@ -23,7 +23,7 @@ static uint8_t debounce_count;
 
 inline bool button_state(void) {
   // Since we're pulled up we need to read the inverse
-  return !button_port->IDR & button_pin;
+  return !(button_port->IDR & button_pin);
 }
 
 inline void configure_input(void) {

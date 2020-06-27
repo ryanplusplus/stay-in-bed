@@ -38,9 +38,9 @@ static const clock_time_t end_wake_up = {
 };
 
 static const led_state_t night_light = {
-  .red = 60,
-  .green = 5,
-  .blue = 5,
+  .red = 40,
+  .green = 0,
+  .blue = 25,
   .brightness = 1
 };
 
@@ -48,7 +48,7 @@ static const led_state_t wake_light = {
   .red = 10,
   .green = 120,
   .blue = 10,
-  .brightness = 20
+  .brightness = 1
 };
 
 static const led_state_t off_light = {
