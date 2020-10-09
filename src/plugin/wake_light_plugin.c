@@ -14,7 +14,7 @@
 static tiny_event_subscription_t subscription;
 
 static const clock_time_t start_night_light = {
-  .hours = pm(8),
+  .hours = pm(7),
   .minutes = 0,
   .seconds = 0
 };
