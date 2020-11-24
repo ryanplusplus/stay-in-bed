@@ -16,7 +16,8 @@ enum {
 
 static tiny_timer_t timer;
 
-static uint8_t transform(const uint8_t current, const uint8_t target) {
+static uint8_t transform(const uint8_t current, const uint8_t target)
+{
   if(current < target) {
     uint16_t diff = target - current;
     uint8_t adjustment = (diff * step) / 100;
@@ -32,7 +33,8 @@ static uint8_t transform(const uint8_t current, const uint8_t target) {
   }
 }
 
-static void update(tiny_timer_group_t* timer_group, void* context) {
+static void update(tiny_timer_group_t* timer_group, void* context)
+{
   reinterpret(key_value_store, context, i_tiny_key_value_store_t*);
   led_state_t requested;
   led_state_t actual;
@@ -52,6 +54,7 @@ static void update(tiny_timer_group_t* timer_group, void* context) {
 
 void led_animation_plugin_init(
   tiny_timer_group_t* timer_group,
-  i_tiny_key_value_store_t* key_value_store) {
+  i_tiny_key_value_store_t* key_value_store)
+{
   update(timer_group, key_value_store);
 }

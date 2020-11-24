@@ -14,7 +14,8 @@ enum {
 
 static tiny_timer_t timer;
 
-static void poll(tiny_timer_group_t* timer_group, void* context) {
+static void poll(tiny_timer_group_t* timer_group, void* context)
+{
   reinterpret(key_value_store, context, i_tiny_key_value_store_t*);
 
   clock_time_t time;
@@ -26,7 +27,8 @@ static void poll(tiny_timer_group_t* timer_group, void* context) {
 
 void rtc_plugin_init(
   tiny_timer_group_t* timer_group,
-  i_tiny_key_value_store_t* key_value_store) {
+  i_tiny_key_value_store_t* key_value_store)
+{
   ds1307_init(i2c_init());
 
   poll(timer_group, key_value_store);

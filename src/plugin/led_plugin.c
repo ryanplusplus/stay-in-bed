@@ -17,7 +17,8 @@ enum {
 
 static tiny_event_subscription_t subscription;
 
-static void data_changed(void* context, const void* _args) {
+static void data_changed(void* context, const void* _args)
+{
   (void)context;
   reinterpret(args, _args, const tiny_key_value_store_on_change_args_t*);
 
@@ -28,7 +29,8 @@ static void data_changed(void* context, const void* _args) {
 
 void led_plugin_init(
   tiny_timer_group_t* timer_group,
-  i_tiny_key_value_store_t* key_value_store) {
+  i_tiny_key_value_store_t* key_value_store)
+{
   (void)timer_group;
 
   apa102_init(spi_init(cpol, cpha, msb_first, spi_baud_8mhz));

@@ -17,12 +17,14 @@ static const uint8_t end_frame[] = { 0xFF, 0xFF, 0xFF, 0xFF };
 
 static const led_state_t all_off = { 0 };
 
-void apa102_init(i_tiny_spi_t* _spi) {
+void apa102_init(i_tiny_spi_t* _spi)
+{
   spi = _spi;
   apa102_write(&all_off);
 }
 
-void apa102_write(const led_state_t* state) {
+void apa102_write(const led_state_t* state)
+{
   uint8_t brightness = state->brightness;
 
   if((state->brightness > 0) && (state->brightness < (1 << 4))) {

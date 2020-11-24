@@ -21,17 +21,20 @@ static bool previous;
 static bool debounced;
 static uint8_t debounce_count;
 
-inline bool button_state(void) {
+inline bool button_state(void)
+{
   // Since we're pulled up we need to read the inverse
   return !(button_port->IDR & button_pin);
 }
 
-inline void configure_input(void) {
+inline void configure_input(void)
+{
   // Input with pull up
   button_port->CR1 |= button_pin;
 }
 
-static void send_press_signal(i_tiny_key_value_store_t* key_value_store, bool state) {
+static void send_press_signal(i_tiny_key_value_store_t* key_value_store, bool state)
+{
   tiny_key_value_store_key_t key = state ? key_button_press_signal : key_button_release_signal;
 
   event_signal_t signal;
@@ -40,7 +43,8 @@ static void send_press_signal(i_tiny_key_value_store_t* key_value_store, bool st
   tiny_key_value_store_write(key_value_store, key, &signal);
 }
 
-static void poll(tiny_timer_group_t* timer_group, void* context) {
+static void poll(tiny_timer_group_t* timer_group, void* context)
+{
   reinterpret(key_value_store, context, i_tiny_key_value_store_t*);
 
   bool current = button_state();
@@ -64,7 +68,8 @@ static void poll(tiny_timer_group_t* timer_group, void* context) {
 
 void button_plugin_init(
   tiny_timer_group_t* timer_group,
-  i_tiny_key_value_store_t* key_value_store) {
+  i_tiny_key_value_store_t* key_value_store)
+{
   configure_input();
   poll(timer_group, key_value_store);
 }

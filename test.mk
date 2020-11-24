@@ -4,6 +4,7 @@ STM8_TINY = lib/stm8-tiny
 TINY = $(STM8_TINY)/lib/tiny
 
 SRC_FILES ?= \
+  src/device/comms.c \
   src/plugin/led_animation_plugin.c \
   src/plugin/wake_light_plugin.c \
 
@@ -15,6 +16,7 @@ SRC_DIRS ?= \
 
 INC_DIRS ?= \
   src \
+  src/device \
   src/plugin \
   src/type \
   $(STM8_TINY)/src \

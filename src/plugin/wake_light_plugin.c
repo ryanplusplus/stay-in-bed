@@ -64,13 +64,15 @@ static clock_time_t start_nap_wake;
 static clock_time_t end_nap_wake;
 static bool nap_active;
 
-static bool in_range_worker(const clock_time_t* lower, const clock_time_t* current, const clock_time_t* upper) {
+static bool in_range_worker(const clock_time_t* lower, const clock_time_t* current, const clock_time_t* upper)
+{
   bool lower_good = (current->hours > lower->hours) || (current->hours == lower->hours && current->minutes >= lower->minutes);
   bool upper_good = (current->hours < upper->hours) || (current->hours == upper->hours && current->minutes <= upper->minutes);
   return lower_good && upper_good;
 }
 
-static bool in_range(const clock_time_t* start, const clock_time_t* current, const clock_time_t* end) {
+static bool in_range(const clock_time_t* start, const clock_time_t* current, const clock_time_t* end)
+{
   if((current->hours == start->hours && current->minutes == start->minutes) ||
     (current->hours == end->hours && current->minutes == end->minutes)) {
     return true;
@@ -83,7 +85,8 @@ static bool in_range(const clock_time_t* start, const clock_time_t* current, con
   }
 }
 
-static void update_light(i_tiny_key_value_store_t* kvs) {
+static void update_light(i_tiny_key_value_store_t* kvs)
+{
   clock_time_t time;
   tiny_key_value_store_read(kvs, key_current_time, &time);
 
@@ -104,11 +107,13 @@ static void update_light(i_tiny_key_value_store_t* kvs) {
   }
 }
 
-static void stop_nap(void) {
+static void stop_nap(void)
+{
   nap_active = false;
 }
 
-static void add_time(clock_time_t* time, uint8_t hours, uint8_t minutes) {
+static void add_time(clock_time_t* time, uint8_t hours, uint8_t minutes)
+{
   time->hours += hours;
   time->minutes += minutes;
 
@@ -120,7 +125,8 @@ static void add_time(clock_time_t* time, uint8_t hours, uint8_t minutes) {
   time->hours %= 24;
 }
 
-static void start_nap(i_tiny_key_value_store_t* kvs) {
+static void start_nap(i_tiny_key_value_store_t* kvs)
+{
   nap_active = true;
 
   clock_time_t time;
@@ -142,7 +148,8 @@ static void start_nap(i_tiny_key_value_store_t* kvs) {
   add_time(&end_nap_wake, 4, 59);
 }
 
-static void data_changed(void* context, const void* _args) {
+static void data_changed(void* context, const void* _args)
+{
   reinterpret(kvs, context, i_tiny_key_value_store_t*);
   reinterpret(args, _args, const tiny_key_value_store_on_change_args_t*);
 
@@ -163,7 +170,8 @@ static void data_changed(void* context, const void* _args) {
 
 void wake_light_plugin_init(
   tiny_timer_group_t* timer_group,
-  i_tiny_key_value_store_t* key_value_store) {
+  i_tiny_key_value_store_t* key_value_store)
+{
   (void)timer_group;
 
   nap_active = false;
