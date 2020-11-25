@@ -43,6 +43,10 @@ TEST_GROUP(wake_light_plugin)
     kvs = data_model_key_value_store();
 
     wake_light_plugin_init(NULL, kvs);
+
+    given_that_the_night_light_color_is(&night);
+    given_that_the_wake_light_color_is(&wake);
+    given_that_the_wake_time_is(6, 30);
   }
 
   void given_that_the_requested_led_state_is(const led_state_t* state)
@@ -82,6 +86,22 @@ TEST_GROUP(wake_light_plugin)
     tiny_key_value_store_read(kvs, key_button_press_signal, &signal);
     signal++;
     tiny_key_value_store_write(kvs, key_button_press_signal, &signal);
+  }
+
+  void given_that_the_night_light_color_is(const led_state_t* state)
+  {
+    tiny_key_value_store_write(kvs, key_night_light_color, state);
+  }
+
+  void given_that_the_wake_light_color_is(const led_state_t* state)
+  {
+    tiny_key_value_store_write(kvs, key_wake_light_color, state);
+  }
+
+  void given_that_the_wake_time_is(uint8_t hours, uint8_t minutes)
+  {
+    clock_time_t time = { hours, minutes, 0 };
+    tiny_key_value_store_write(kvs, key_wake_time, &time);
   }
 };
 
@@ -124,17 +144,17 @@ TEST(wake_light_plugin, should_turn_on_wake_light_between_630_am_and_8_am)
   the_requested_led_state_should_be(&wake);
 }
 
-TEST(wake_light_plugin, should_turn_on_wake_light_up_until_8_am)
+TEST(wake_light_plugin, should_turn_on_wake_light_up_until_830_am)
 {
   given_that_the_requested_led_state_is(&off);
-  when_the_time_becomes(8, 0);
+  when_the_time_becomes(8, 30);
   the_requested_led_state_should_be(&wake);
 }
 
-TEST(wake_light_plugin, should_turn_off_light_at_801_am)
+TEST(wake_light_plugin, should_turn_off_light_at_831_am)
 {
   given_that_the_requested_led_state_is(&wake);
-  when_the_time_becomes(8, 1);
+  when_the_time_becomes(8, 31);
   the_requested_led_state_should_be(&off);
 }
 
@@ -184,5 +204,19 @@ TEST(wake_light_plugin, should_cancel_a_nap_sequence_when_the_button_is_pressed_
   the_requested_led_state_should_be(&night);
 
   after_the_button_is_pressed();
+  the_requested_led_state_should_be(&off);
+}
+
+TEST(wake_light_plugin, should_not_carry_nap_into_the_next_day)
+{
+  given_that_the_time_is(12, 30);
+
+  after_the_button_is_pressed();
+  the_requested_led_state_should_be(&night);
+
+  when_the_time_becomes(17, 30);
+  the_requested_led_state_should_be(&off);
+
+  when_the_time_becomes(12, 30);
   the_requested_led_state_should_be(&off);
 }
