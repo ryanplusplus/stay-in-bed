@@ -5,7 +5,6 @@
 
 #include "comms_plugin.h"
 #include "comms.h"
-#include "uart1.h"
 
 static comms_t comms;
 

@@ -6,6 +6,7 @@
 #ifndef comms_plugin_h
 #define comms_plugin_h
 
+#include "uart1.h"
 #include "tiny_timer.h"
 #include "i_tiny_key_value_store.h"
 
