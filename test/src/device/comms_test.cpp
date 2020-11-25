@@ -96,7 +96,7 @@ TEST_GROUP(comms)
     CHECK_EQUAL(expected.brightness, actual.brightness);
   }
 
-  void the_wake_light_color_should_be(uint8_t hours, uint8_t minutes, uint8_t seconds)
+  void the_wake_time_should_be(uint8_t hours, uint8_t minutes, uint8_t seconds)
   {
     clock_time_t expected = { hours, minutes, seconds };
     clock_time_t actual;
@@ -119,4 +119,53 @@ TEST(comms, should_parse_button_press_messages)
 {
   a_button_press_should_be_sent();
   after_string_is_received("@key_press\n");
+}
+
+TEST(comms, should_parse_wake_time_messages)
+{
+  given_that_the_wake_time_is(1, 2, 3);
+  after_string_is_received("@wake_time(13,5)\n");
+  the_wake_time_should_be(13, 5, 0);
+}
+
+TEST(comms, should_parse_night_light_color_messages)
+{
+  given_that_the_night_light_color_is(0, 0, 0, 0);
+  after_string_is_received("@night_light_color(123,7,45,54)\n");
+  the_night_light_color_should_be(123, 7, 45, 54);
+}
+
+TEST(comms, should_parse_wake_light_color_messages)
+{
+  given_that_the_wake_light_color_is(0, 0, 0, 0);
+  after_string_is_received("@wake_light_color(123,7,45,54)\n");
+  the_wake_light_color_should_be(123, 7, 45, 54);
+}
+
+TEST(comms, should_parse_multiple_commands)
+{
+  a_button_press_should_be_sent();
+  after_string_is_received("@key_press\n@wake_time(1,2)\n");
+  the_wake_time_should_be(1, 2, 0);
+}
+
+TEST(comms, should_not_double_parse_a_command)
+{
+  a_button_press_should_be_sent();
+  after_string_is_received("@key_press\n\n");
+}
+
+TEST(comms, should_recover_from_an_interrupted_message)
+{
+  a_button_press_should_be_sent();
+  after_string_is_received("@key_@key_press\n");
+}
+
+TEST(comms, should_not_go_out_of_bounds_when_receiving_a_long_command)
+{
+  after_string_is_received("@");
+
+  for(uint16_t i = 0; i < 1000; i++) {
+    after_string_is_received("1234567890");
+  }
 }

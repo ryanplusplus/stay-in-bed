@@ -16,6 +16,7 @@ typedef struct
   i_tiny_key_value_store_t* key_value_store;
   tiny_fsm_t fsm;
   uint8_t buffer[50];
+  uint8_t buffer_offset;
 } comms_t;
 
 void comms_init(
