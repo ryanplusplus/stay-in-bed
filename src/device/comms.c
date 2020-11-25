@@ -9,6 +9,10 @@
 #include "comms.h"
 #include "tiny_utils.h"
 
+enum {
+  signal_byte_received = tiny_fsm_signal_user_start
+};
+
 #define starts_with(s, prefix) (0 == strncmp((prefix), (s), strlen(prefix)))
 
 static const char* read_number(const char* s, uint8_t* i)
@@ -23,10 +27,6 @@ static const char* read_number(const char* s, uint8_t* i)
 
   return s;
 }
-
-enum {
-  signal_byte_received = tiny_fsm_signal_user_start
-};
 
 static void handle_message(comms_t* self, const char* command)
 {
@@ -63,6 +63,22 @@ static void handle_message(comms_t* self, const char* command)
 
     led_state_t state = { r, g, b, brightness };
     tiny_key_value_store_write(self->key_value_store, key_night_light_color, &state);
+  }
+  else if(starts_with(command, "wake_light_color")) {
+    uint8_t r, g, b;
+    uint8_t brightness;
+
+    command += strlen("wake_light_color(");
+    command = read_number(command, &r);
+    command += strlen(",");
+    command = read_number(command, &g);
+    command += strlen(",");
+    command = read_number(command, &b);
+    command += strlen(",");
+    command = read_number(command, &brightness);
+
+    led_state_t state = { r, g, b, brightness };
+    tiny_key_value_store_write(self->key_value_store, key_wake_light_color, &state);
   }
 }
 

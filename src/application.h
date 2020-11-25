@@ -12,8 +12,10 @@
 #include "led_animation_plugin.h"
 #include "wake_light_plugin.h"
 #include "button_plugin.h"
+#include "comms_plugin.h"
 
-inline void application_init(tiny_timer_group_t* timer_group) {
+inline void application_init(tiny_timer_group_t* timer_group)
+{
   data_model_init();
   i_tiny_key_value_store_t* key_value_store = data_model_key_value_store();
 
@@ -22,6 +24,7 @@ inline void application_init(tiny_timer_group_t* timer_group) {
   wake_light_plugin_init(timer_group, key_value_store);
   rtc_plugin_init(timer_group, key_value_store);
   button_plugin_init(timer_group, key_value_store);
+  comms_plugin_init(timer_group, key_value_store);
 }
 
 #endif
