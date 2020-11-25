@@ -45,7 +45,7 @@ TEST_GROUP(comms)
     (void)context;
 
     if(args->key == key_button_press_signal) {
-      mock().actualCall("key_press");
+      mock().actualCall("button_press");
     }
   }
 
@@ -69,7 +69,7 @@ TEST_GROUP(comms)
 
   void a_button_press_should_be_sent()
   {
-    mock().expectOneCall("key_press");
+    mock().expectOneCall("button_press");
   }
 
   void the_night_light_color_should_be(uint8_t red, uint8_t green, uint8_t blue, uint8_t brightness)
@@ -118,7 +118,7 @@ TEST_GROUP(comms)
 TEST(comms, should_parse_button_press_messages)
 {
   a_button_press_should_be_sent();
-  after_string_is_received("@key_press\n");
+  after_string_is_received("@button_press\n");
 }
 
 TEST(comms, should_parse_wake_time_messages)
@@ -145,20 +145,20 @@ TEST(comms, should_parse_wake_light_color_messages)
 TEST(comms, should_parse_multiple_commands)
 {
   a_button_press_should_be_sent();
-  after_string_is_received("@key_press\n@wake_time(1,2)\n");
+  after_string_is_received("@button_press\n@wake_time(1,2)\n");
   the_wake_time_should_be(1, 2, 0);
 }
 
 TEST(comms, should_not_double_parse_a_command)
 {
   a_button_press_should_be_sent();
-  after_string_is_received("@key_press\n\n");
+  after_string_is_received("@button_press\n\n");
 }
 
 TEST(comms, should_recover_from_an_interrupted_message)
 {
   a_button_press_should_be_sent();
-  after_string_is_received("@key_@key_press\n");
+  after_string_is_received("@button_@button_press\n");
 }
 
 TEST(comms, should_not_go_out_of_bounds_when_receiving_a_long_command)
