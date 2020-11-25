@@ -118,7 +118,7 @@ TEST_GROUP(comms)
 TEST(comms, should_parse_button_press_messages)
 {
   a_button_press_should_be_sent();
-  after_string_is_received("@button_press\n");
+  after_string_is_received("@button_press()\n");
 }
 
 TEST(comms, should_parse_wake_time_messages)
@@ -145,20 +145,20 @@ TEST(comms, should_parse_wake_light_color_messages)
 TEST(comms, should_parse_multiple_commands)
 {
   a_button_press_should_be_sent();
-  after_string_is_received("@button_press\n@wake_time(1,2)\n");
+  after_string_is_received("@button_press()\n@wake_time(1,2)\n");
   the_wake_time_should_be(1, 2, 0);
 }
 
 TEST(comms, should_not_double_parse_a_command)
 {
   a_button_press_should_be_sent();
-  after_string_is_received("@button_press\n\n");
+  after_string_is_received("@button_press()\n\n");
 }
 
 TEST(comms, should_recover_from_an_interrupted_message)
 {
   a_button_press_should_be_sent();
-  after_string_is_received("@button_@button_press\n");
+  after_string_is_received("@button_@button_press()\n");
 }
 
 TEST(comms, should_not_go_out_of_bounds_when_receiving_a_long_command)

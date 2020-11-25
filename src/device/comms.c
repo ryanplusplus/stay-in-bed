@@ -30,7 +30,7 @@ static const char* read_number(const char* s, uint8_t* i)
 
 static void handle_message(comms_t* self, const char* command)
 {
-  if(starts_with(command, "button_press")) {
+  if(starts_with(command, "button_press()")) {
     event_signal_t signal;
     tiny_key_value_store_read(self->key_value_store, key_button_press_signal, &signal);
     signal++;
