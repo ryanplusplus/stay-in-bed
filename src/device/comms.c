@@ -50,7 +50,6 @@ static void handle_message(comms_t* self, const char* command)
   }
   else if(starts_with(command, "night_light_color")) {
     uint8_t r, g, b;
-    uint8_t brightness;
 
     command += strlen("night_light_color(");
     command = read_number(command, &r);
@@ -58,15 +57,12 @@ static void handle_message(comms_t* self, const char* command)
     command = read_number(command, &g);
     command += strlen(",");
     command = read_number(command, &b);
-    command += strlen(",");
-    command = read_number(command, &brightness);
 
-    led_state_t state = { r, g, b, brightness };
+    led_state_t state = { r, g, b, 1 };
     tiny_key_value_store_write(self->key_value_store, key_night_light_color, &state);
   }
   else if(starts_with(command, "wake_light_color")) {
     uint8_t r, g, b;
-    uint8_t brightness;
 
     command += strlen("wake_light_color(");
     command = read_number(command, &r);
@@ -74,10 +70,8 @@ static void handle_message(comms_t* self, const char* command)
     command = read_number(command, &g);
     command += strlen(",");
     command = read_number(command, &b);
-    command += strlen(",");
-    command = read_number(command, &brightness);
 
-    led_state_t state = { r, g, b, brightness };
+    led_state_t state = { r, g, b, 1 };
     tiny_key_value_store_write(self->key_value_store, key_wake_light_color, &state);
   }
 }

@@ -131,15 +131,15 @@ TEST(comms, should_parse_wake_time_messages)
 TEST(comms, should_parse_night_light_color_messages)
 {
   given_that_the_night_light_color_is(0, 0, 0, 0);
-  after_string_is_received("@night_light_color(123,7,45,54)\n");
-  the_night_light_color_should_be(123, 7, 45, 54);
+  after_string_is_received("@night_light_color(123,7,45)\n");
+  the_night_light_color_should_be(123, 7, 45, 1);
 }
 
 TEST(comms, should_parse_wake_light_color_messages)
 {
   given_that_the_wake_light_color_is(0, 0, 0, 0);
-  after_string_is_received("@wake_light_color(123,7,45,54)\n");
-  the_wake_light_color_should_be(123, 7, 45, 54);
+  after_string_is_received("@wake_light_color(123,7,45)\n");
+  the_wake_light_color_should_be(123, 7, 45, 1);
 }
 
 TEST(comms, should_parse_multiple_commands)
