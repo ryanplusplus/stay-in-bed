@@ -119,10 +119,6 @@ static void start_nap(i_tiny_key_value_store_t* kvs)
   start_nap_night.hours = time.hours;
   start_nap_night.minutes = time.minutes;
 
-  // end_nap_night.hours = time.hours;
-  // end_nap_night.minutes = time.minutes;
-  // add_time(&end_nap_night, 2, 29);
-
   start_nap_wake.hours = time.hours;
   start_nap_wake.minutes = time.minutes;
   add_time(&start_nap_wake, 2, 30);
