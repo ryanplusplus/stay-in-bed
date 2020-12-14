@@ -12,8 +12,8 @@ enum {
 
 static i_tiny_spi_t* spi;
 
-static const uint8_t start_frame[] = { 0, 0, 0, 0 };
-static const uint8_t end_frame[] = { 0xFF, 0xFF, 0xFF, 0xFF };
+static const uint8_t start_frame[] = { 0, 0, 0, 0, 0, 0 };
+static const uint8_t end_frame[] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
 
 static const led_state_t all_off = { 0 };
 
