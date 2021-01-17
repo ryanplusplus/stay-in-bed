@@ -12,7 +12,7 @@
 #define button_pin (1 << 3)
 
 #define ground_port GPIOD
-#define ground_pin (1 << 1)
+#define ground_pin (1 << 2)
 
 enum {
   poll_period_msec = 15,

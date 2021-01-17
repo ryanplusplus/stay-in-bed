@@ -96,11 +96,12 @@ static void state_wait_for_end(tiny_fsm_t* fsm, tiny_fsm_signal_t signal, const 
 
 static void state_wait_for_start(tiny_fsm_t* fsm, tiny_fsm_signal_t signal, const void* data)
 {
+  comms_t* self = container_of(comms_t, fsm, fsm);
   reinterpret(byte, data, const uint8_t*);
 
   switch(signal) {
     case signal_byte_received:
-      if(*byte == '@') {
+      if(!self->message_ready && *byte == '@') {
         tiny_fsm_transition(fsm, state_wait_for_end);
       }
   }
@@ -121,7 +122,7 @@ static void state_wait_for_end(tiny_fsm_t* fsm, tiny_fsm_signal_t signal, const 
         tiny_fsm_transition(fsm, state_wait_for_end);
       }
       else if(*byte == '\n') {
-        handle_message(self, (const char*)self->buffer);
+        self->message_ready = true;
         tiny_fsm_transition(fsm, state_wait_for_start);
       }
       else {
@@ -142,15 +143,30 @@ static void byte_received(void* context, const void* args)
   tiny_fsm_send_signal(&self->fsm, signal_byte_received, args);
 }
 
+static void check_for_message_ready(tiny_timer_group_t* timer_group, void* context)
+{
+  reinterpret(self, context, comms_t*);
+  (void)timer_group;
+
+  if(self->message_ready) {
+    handle_message(self, (const char*)self->buffer);
+    self->message_ready = false;
+  }
+}
+
 void comms_init(
   comms_t* self,
   i_tiny_uart_t* uart,
-  i_tiny_key_value_store_t* key_value_store)
+  i_tiny_key_value_store_t* key_value_store,
+  tiny_timer_group_t* timer_group)
 {
   self->key_value_store = key_value_store;
+  self->message_ready = false;
 
   tiny_event_subscription_init(&self->byte_received_subscription, self, byte_received);
   tiny_event_subscribe(tiny_uart_on_receive(uart), &self->byte_received_subscription);
+
+  tiny_timer_start_periodic(timer_group, &self->timer, 0, check_for_message_ready, self);
 
   tiny_fsm_init(&self->fsm, state_wait_for_start);
 }

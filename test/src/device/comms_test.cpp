@@ -14,6 +14,7 @@ extern "C" {
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 #include "tiny_uart_test_double.h"
+#include "tiny_time_source_double.h"
 
 TEST_GROUP(comms)
 {
@@ -26,17 +27,21 @@ TEST_GROUP(comms)
   i_tiny_key_value_store_t* kvs;
   tiny_uart_test_double_t uart;
   tiny_event_subscription_t data_changed_subscription;
+  tiny_timer_group_t timer_group;
+  tiny_time_source_double_t time_source;
 
   void setup()
   {
     data_model_init();
     kvs = data_model_key_value_store();
     tiny_uart_test_double_init(&uart);
+    tiny_time_source_double_init(&time_source);
+    tiny_timer_group_init(&timer_group, &time_source.interface);
 
     tiny_event_subscription_init(&data_changed_subscription, NULL, data_changed);
     tiny_event_subscribe(tiny_key_value_store_on_change(kvs), &data_changed_subscription);
 
-    comms_init(&self, &uart.interface, kvs);
+    comms_init(&self, &uart.interface, kvs, &timer_group);
   }
 
   static void data_changed(void* context, const void* _args)
@@ -122,6 +127,7 @@ TEST_GROUP(comms)
   {
     for(uint8_t i = 0; i < strlen(s); i++) {
       tiny_uart_test_double_trigger_receive(&uart, s[i]);
+      tiny_timer_group_run(&timer_group);
     }
   }
 };
