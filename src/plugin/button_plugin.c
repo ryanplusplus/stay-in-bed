@@ -11,6 +11,9 @@
 #define button_port GPIOD
 #define button_pin (1 << 3)
 
+#define ground_port GPIOD
+#define ground_pin (1 << 1)
+
 enum {
   poll_period_msec = 15,
   target_debounce_count = 3
@@ -31,6 +34,13 @@ inline void configure_input(void)
 {
   // Input with pull up
   button_port->CR1 |= button_pin;
+}
+
+inline void configure_output(void)
+{
+  // Output low
+  ground_port->DDR |= ground_pin;
+  ground_port->ODR &= ~ground_pin;
 }
 
 static void send_press_signal(i_tiny_key_value_store_t* key_value_store, bool state)
@@ -71,5 +81,6 @@ void button_plugin_init(
   i_tiny_key_value_store_t* key_value_store)
 {
   configure_input();
+  configure_output();
   poll(timer_group, key_value_store);
 }
