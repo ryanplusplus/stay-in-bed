@@ -26,6 +26,20 @@ static const led_state_t wake = {
   .brightness = 1
 };
 
+static const led_state_t default_night = {
+  .red = 11,
+  .green = 0,
+  .blue = 5,
+  .brightness = 1
+};
+
+static const led_state_t default_wake = {
+  .red = 2,
+  .green = 12,
+  .blue = 0,
+  .brightness = 1
+};
+
 static const led_state_t off = {
   .red = 0,
   .green = 0,
@@ -219,4 +233,20 @@ TEST(wake_light_plugin, should_not_carry_nap_into_the_next_day)
 
   when_the_time_becomes(12, 30);
   the_requested_led_state_should_be(&off);
+}
+
+TEST(wake_light_plugin, should_use_default_value_for_night_light_when_it_is_empty)
+{
+  given_that_the_night_light_color_is(&off);
+
+  when_the_time_becomes(6, 29);
+  the_requested_led_state_should_be(&default_night);
+}
+
+TEST(wake_light_plugin, should_use_default_value_for_wake_light_when_it_is_empty)
+{
+  given_that_the_wake_light_color_is(&off);
+
+  when_the_time_becomes(6, 30);
+  the_requested_led_state_should_be(&default_wake);
 }

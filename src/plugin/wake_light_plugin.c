@@ -4,6 +4,7 @@
  */
 
 #include <stddef.h>
+#include <string.h>
 #include "data_model_key_value_pairs.h"
 #include "wake_light_plugin.h"
 #include "tiny_utils.h"
@@ -24,6 +25,20 @@ static const led_state_t off_light = {
   .green = 0,
   .blue = 0,
   .brightness = 0
+};
+
+static const led_state_t default_night_light = {
+  .red = 11,
+  .green = 0,
+  .blue = 5,
+  .brightness = 1
+};
+
+static const led_state_t default_wake_light = {
+  .red = 2,
+  .green = 12,
+  .blue = 0,
+  .brightness = 1
 };
 
 static clock_time_t start_nap_night;
@@ -65,6 +80,13 @@ static void add_time(clock_time_t* time, uint8_t hours, uint8_t minutes)
   time->hours %= 24;
 }
 
+static void default_to(led_state_t* led_state, const led_state_t* default_state)
+{
+  if(memcmp(led_state, &off_light, sizeof(*led_state)) == 0) {
+    memcpy(led_state, default_state, sizeof(*led_state));
+  }
+}
+
 static void update_light(i_tiny_key_value_store_t* kvs)
 {
   clock_time_t time;
@@ -79,9 +101,11 @@ static void update_light(i_tiny_key_value_store_t* kvs)
 
   led_state_t night_light;
   tiny_key_value_store_read(kvs, key_night_light_color, &night_light);
+  default_to(&night_light, &default_night_light);
 
   led_state_t wake_light;
   tiny_key_value_store_read(kvs, key_wake_light_color, &wake_light);
+  default_to(&wake_light, &default_wake_light);
 
   if(nap_active && in_range(&start_nap_wake, &time, &end_nap_wake)) {
     tiny_key_value_store_write(kvs, key_led_requested_state, &wake_light);
