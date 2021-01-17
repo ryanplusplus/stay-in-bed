@@ -48,6 +48,21 @@ static void handle_message(comms_t* self, const char* command)
     clock_time_t time = { hours, minutes, 0 };
     tiny_key_value_store_write(self->key_value_store, key_wake_time, &time);
   }
+  else if(starts_with(command, "sync_time")) {
+    uint8_t hours;
+    uint8_t minutes;
+    uint8_t seconds;
+
+    command += strlen("sync_time(");
+    command = read_number(command, &hours);
+    command += strlen(",");
+    command = read_number(command, &minutes);
+    command += strlen(",");
+    command = read_number(command, &seconds);
+
+    clock_time_t time = { hours, minutes, seconds };
+    tiny_key_value_store_write(self->key_value_store, key_sync_time, &time);
+  }
   else if(starts_with(command, "night_light_color")) {
     uint8_t r, g, b;
 

@@ -13,6 +13,17 @@ enum {
 };
 
 static tiny_timer_t timer;
+static tiny_event_subscription_t subscription;
+
+static void data_changed(void* context, const void* _args)
+{
+  reinterpret(kvs, context, i_tiny_key_value_store_t*);
+  reinterpret(args, _args, const tiny_key_value_store_on_change_args_t*);
+
+  if(args->key == key_sync_time) {
+    ds1307_set((const clock_time_t*)args->value);
+  }
+}
 
 static void poll(tiny_timer_group_t* timer_group, void* context)
 {
@@ -32,4 +43,7 @@ void rtc_plugin_init(
   ds1307_init(i2c_init());
 
   poll(timer_group, key_value_store);
+
+  tiny_event_subscription_init(&subscription, key_value_store, data_changed);
+  tiny_event_subscribe(tiny_key_value_store_on_change(key_value_store), &subscription);
 }

@@ -107,6 +107,17 @@ TEST_GROUP(comms)
     CHECK_EQUAL(expected.seconds, actual.seconds);
   }
 
+  void the_sync_time_should_be(uint8_t hours, uint8_t minutes, uint8_t seconds)
+  {
+    clock_time_t expected = { hours, minutes, seconds };
+    clock_time_t actual;
+    tiny_key_value_store_read(kvs, key_sync_time, &actual);
+
+    CHECK_EQUAL(expected.hours, actual.hours);
+    CHECK_EQUAL(expected.minutes, actual.minutes);
+    CHECK_EQUAL(expected.seconds, actual.seconds);
+  }
+
   void after_string_is_received(const char* s)
   {
     for(uint8_t i = 0; i < strlen(s); i++) {
@@ -126,6 +137,13 @@ TEST(comms, should_parse_wake_time_messages)
   given_that_the_wake_time_is(1, 2, 3);
   after_string_is_received("@wake_time(13,5)\n");
   the_wake_time_should_be(13, 5, 0);
+}
+
+TEST(comms, should_parse_sync_time_messages)
+{
+  given_that_the_wake_time_is(1, 2, 3);
+  after_string_is_received("@sync_time(13,5,22)\n");
+  the_sync_time_should_be(13, 5, 22);
 }
 
 TEST(comms, should_parse_night_light_color_messages)
