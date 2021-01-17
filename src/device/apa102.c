@@ -7,7 +7,7 @@
 #include "apa102.h"
 
 enum {
-  led_count = 60
+  led_count = 64
 };
 
 static i_tiny_spi_t* spi;

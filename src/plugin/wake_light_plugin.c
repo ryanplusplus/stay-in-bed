@@ -20,6 +20,12 @@ static const clock_time_t start_night_light = {
   .seconds = 0
 };
 
+static const clock_time_t default_wake_time = {
+  .hours = am(7),
+  .minutes = 0,
+  .seconds = 0
+};
+
 static const led_state_t off_light = {
   .red = 0,
   .green = 0,
@@ -179,6 +185,8 @@ void wake_light_plugin_init(
   (void)timer_group;
 
   nap_active = false;
+
+  tiny_key_value_store_write(key_value_store, key_wake_time, &default_wake_time);
 
   tiny_event_subscription_init(&subscription, key_value_store, data_changed);
   tiny_event_subscribe(tiny_key_value_store_on_change(key_value_store), &subscription);

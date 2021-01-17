@@ -63,6 +63,11 @@ TEST_GROUP(wake_light_plugin)
     given_that_the_wake_time_is(6, 30);
   }
 
+  void after_the_plugin_is_initialized(void)
+  {
+    wake_light_plugin_init(NULL, kvs);
+  }
+
   void given_that_the_requested_led_state_is(const led_state_t* state)
   {
     tiny_key_value_store_write(kvs, key_led_requested_state, state);
@@ -77,6 +82,20 @@ TEST_GROUP(wake_light_plugin)
     };
 
     tiny_key_value_store_write(kvs, key_current_time, &time);
+  }
+
+  void the_wake_time_should_be(uint8_t hours, uint8_t minutes)
+  {
+    clock_time_t expected = {
+      .hours = hours,
+      .minutes = minutes,
+      .seconds = 0
+    };
+    clock_time_t actual;
+
+    tiny_key_value_store_read(kvs, key_wake_time, &actual);
+
+    MEMCMP_EQUAL(&expected, &actual, sizeof(expected));
   }
 
   void given_that_the_time_is(uint8_t hours, uint8_t minutes)
@@ -249,4 +268,11 @@ TEST(wake_light_plugin, should_use_default_value_for_wake_light_when_it_is_empty
 
   when_the_time_becomes(6, 30);
   the_requested_led_state_should_be(&default_wake);
+}
+
+TEST(wake_light_plugin, should_set_a_default_wake_time_on_init)
+{
+  given_that_the_wake_time_is(6, 30);
+  after_the_plugin_is_initialized();
+  the_wake_time_should_be(7, 0);
 }
